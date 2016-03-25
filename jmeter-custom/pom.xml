@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>test.jmeter</groupId>
+	<artifactId>jmeter-custom</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+		<java.version>1.7</java.version>
+		<jmeter.repo>http://apache.stu.edu.tw/jmeter/binaries</jmeter.repo>
+		<jmeter.file>apache-jmeter-2.13.zip</jmeter.file>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${project.build.directory}</directory>
+							<excludes>
+								<exclude>**/${jmeter.file}</exclude>
+							</excludes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<inherited>true</inherited>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<showWarnings>false</showWarnings>
+					<fork>false</fork>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<mkdir dir="${project.basedir}/download" />
+								<get src="${jmeter.repo}/${jmeter.file}" dest="${project.basedir}/download/${jmeter.file}"
+									verbose="true" usetimestamp="true" />
+								<unzip src="${project.basedir}/download/${jmeter.file}"
+									dest="${project.build.directory}/native/jmeter" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.jmeter</groupId>
+			<artifactId>ApacheJMeter_java</artifactId>
+			<version>2.13</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-math3</artifactId>
+					<groupId>commons-math3</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-pool2</artifactId>
+					<groupId>commons-pool2</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
+	</dependencies>
+</project>
